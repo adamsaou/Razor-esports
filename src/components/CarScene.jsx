@@ -79,6 +79,20 @@ function MobileCarScene() {
     return () => v.removeEventListener('ended', onEnded)
   }, [])
 
+  // Safety: if the network/browser stalls and 'ended' never fires, force
+  // the tagline phase after the expected play duration so the scene still
+  // resolves visually.
+  useEffect(() => {
+    if (phase !== 'video') return
+    const v = videoRef.current
+    const dur = v && v.duration && !Number.isNaN(v.duration) ? v.duration : 2.5
+    const expectedMs = (dur / MOBILE_PLAYBACK_RATE) * 1000 + 700
+    const t = setTimeout(() => {
+      setPhase(p => (p === 'video' ? 'tagline' : p))
+    }, expectedMs)
+    return () => clearTimeout(t)
+  }, [phase])
+
   const showTitle = phase === 'title'
   const showTagline = phase === 'tagline'
   // Black overlay also covers the video in 'idle' so it never flashes before the title appears
@@ -218,7 +232,7 @@ function DesktopCarScene() {
 
   useMotionValueEvent(scrollYProgress, 'change', latest => {
     const range = VIDEO_END - VIDEO_START
-    targetProgress.current = Math.min(Math.max((latest - VIDEO_START) / range, 0), 0.999)
+    targetProgress.current = Math.min(Math.max((latest - VIDEO_START) / range, 0), 1)
 
     // Title gets ~32% of scroll on pitch black, tagline gets ~28% at the end
     setShowTitle(latest > 0.02 && latest < 0.34)
@@ -240,7 +254,8 @@ function DesktopCarScene() {
       if (visible.current) {
         const v = videoRef.current
         if (v && v.duration && !Number.isNaN(v.duration)) {
-          const t = targetProgress.current * v.duration
+          // Allow the scrub to reach the actual final frame
+          const t = Math.min(targetProgress.current * v.duration, v.duration - 0.01)
           if (Math.abs(v.currentTime - t) > 0.04) v.currentTime = t
         }
       }
