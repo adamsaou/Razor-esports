@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
-import { carAnimation, otherCarAnimation, ballAnimation } from '../assets'
+import { kickoffVideo } from '../assets'
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false)
@@ -14,21 +14,9 @@ function useIsMobile() {
   return isMobile
 }
 
-const VIDEO_DESKTOP_CLASS =
+const VIDEO_CLASS =
   'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
-const VIDEO_MOBILE_CLASS =
-  'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
-
-// Mobile: aggressive zoom so the action fills the whole short section + filter
-// contrast to crush video-compression near-blacks so screen-blend hides them cleanly.
-const VIDEO_MOBILE_STYLE = {
-  mixBlendMode: 'screen',
-  willChange: 'transform',
-  transform: 'translateZ(0) scale(1.7)',
-  filter: 'contrast(1.18) brightness(0.95)',
-}
-const VIDEO_BASE_STYLE = {
-  mixBlendMode: 'screen',
+const VIDEO_STYLE = {
   willChange: 'transform',
   transform: 'translateZ(0)',
 }
@@ -38,9 +26,7 @@ const MOBILE_PLAYBACK_RATE = 2.5
 
 function MobileCarScene() {
   const sectionRef = useRef(null)
-  const ballRef = useRef(null)
-  const carRef = useRef(null)
-  const otherCarRef = useRef(null)
+  const videoRef = useRef(null)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -49,16 +35,15 @@ function MobileCarScene() {
     const io = new IntersectionObserver(
       entries => {
         const inView = entries[0].isIntersecting
-        const videos = [ballRef.current, carRef.current, otherCarRef.current].filter(Boolean)
-        for (const v of videos) {
-          if (inView) {
-            v.currentTime = 0
-            v.playbackRate = MOBILE_PLAYBACK_RATE
-            v.play().catch(() => {})
-          } else {
-            v.pause()
-            v.currentTime = 0
-          }
+        const v = videoRef.current
+        if (!v) return
+        if (inView) {
+          v.currentTime = 0
+          v.playbackRate = MOBILE_PLAYBACK_RATE
+          v.play().catch(() => {})
+        } else {
+          v.pause()
+          v.currentTime = 0
         }
       },
       { threshold: 0.4 }
@@ -73,52 +58,33 @@ function MobileCarScene() {
       style={{
         position: 'relative',
         width: '100%',
-        // Hard cap height so the section never dominates the phone screen.
-        // Use the smaller of "16:9 of width" or "30% of viewport height".
         height: 'min(56vw, 30vh)',
         backgroundColor: '#000',
         overflow: 'hidden',
       }}
     >
       <video
-        ref={ballRef}
-        src={ballAnimation}
+        ref={videoRef}
+        src={kickoffVideo}
         muted playsInline preload="auto" disableRemotePlayback
-        className={VIDEO_MOBILE_CLASS}
-        style={VIDEO_MOBILE_STYLE}
+        className={VIDEO_CLASS}
+        style={VIDEO_STYLE}
       />
-      <video
-        ref={carRef}
-        src={carAnimation}
-        muted playsInline preload="auto" disableRemotePlayback
-        className={VIDEO_MOBILE_CLASS}
-        style={VIDEO_MOBILE_STYLE}
-      />
-      <video
-        ref={otherCarRef}
-        src={otherCarAnimation}
-        muted playsInline preload="auto" disableRemotePlayback
-        className={VIDEO_MOBILE_CLASS}
-        style={VIDEO_MOBILE_STYLE}
-      />
-      {/* Tight radial spotlight — frames the ball, masks any residual edge halo */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at center, transparent 25%, rgba(0,0,0,0.85) 70%, #000 100%)',
+            'radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.55) 90%)',
         }}
       />
     </section>
   )
 }
 
-// ─────────────────────────── Desktop: scroll-scrubbed ───────────────────────────
+// ───────── Desktop: scroll-scrubbed ─────────
 function DesktopCarScene() {
   const ref = useRef(null)
-  const carRef = useRef(null)
-  const otherCarRef = useRef(null)
-  const ballRef = useRef(null)
+  const videoRef = useRef(null)
 
   const targetProgress = useRef(0)
   const rafId = useRef(0)
@@ -150,8 +116,8 @@ function DesktopCarScene() {
   useEffect(() => {
     const tick = () => {
       if (visible.current) {
-        for (const v of [carRef.current, otherCarRef.current, ballRef.current]) {
-          if (!v || !v.duration || Number.isNaN(v.duration)) continue
+        const v = videoRef.current
+        if (v && v.duration && !Number.isNaN(v.duration)) {
           const t = targetProgress.current * v.duration
           if (Math.abs(v.currentTime - t) > 0.04) v.currentTime = t
         }
@@ -164,7 +130,7 @@ function DesktopCarScene() {
 
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.03, 0.97, 1], [1, 0, 0, 1])
 
-  const initVideo = videoRef => () => {
+  const initVideo = () => {
     const v = videoRef.current
     if (v) {
       v.pause()
@@ -179,28 +145,12 @@ function DesktopCarScene() {
         style={{ backgroundColor: '#000', contain: 'strict' }}
       >
         <video
-          ref={ballRef}
-          src={ballAnimation}
+          ref={videoRef}
+          src={kickoffVideo}
           muted playsInline preload="auto" disableRemotePlayback
-          onLoadedMetadata={initVideo(ballRef)}
-          className={VIDEO_DESKTOP_CLASS}
-          style={VIDEO_BASE_STYLE}
-        />
-        <video
-          ref={carRef}
-          src={carAnimation}
-          muted playsInline preload="auto" disableRemotePlayback
-          onLoadedMetadata={initVideo(carRef)}
-          className={VIDEO_DESKTOP_CLASS}
-          style={VIDEO_BASE_STYLE}
-        />
-        <video
-          ref={otherCarRef}
-          src={otherCarAnimation}
-          muted playsInline preload="auto" disableRemotePlayback
-          onLoadedMetadata={initVideo(otherCarRef)}
-          className={VIDEO_DESKTOP_CLASS}
-          style={VIDEO_BASE_STYLE}
+          onLoadedMetadata={initVideo}
+          className={VIDEO_CLASS}
+          style={VIDEO_STYLE}
         />
 
         <motion.div
