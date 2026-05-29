@@ -19,12 +19,12 @@ const VIDEO_DESKTOP_CLASS =
 const VIDEO_MOBILE_CLASS =
   'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
 
-// Mobile: zoom in, plus filter contrast to crush video-compression near-blacks
-// to true black so the screen blend mode hides all background pixels cleanly.
+// Mobile: aggressive zoom so the action fills the whole short section + filter
+// contrast to crush video-compression near-blacks so screen-blend hides them cleanly.
 const VIDEO_MOBILE_STYLE = {
   mixBlendMode: 'screen',
   willChange: 'transform',
-  transform: 'translateZ(0) scale(1.25)',
+  transform: 'translateZ(0) scale(1.7)',
   filter: 'contrast(1.18) brightness(0.95)',
 }
 const VIDEO_BASE_STYLE = {
@@ -73,7 +73,9 @@ function MobileCarScene() {
       style={{
         position: 'relative',
         width: '100%',
-        aspectRatio: '16 / 9',
+        // Hard cap height so the section never dominates the phone screen.
+        // Use the smaller of "16:9 of width" or "30% of viewport height".
+        height: 'min(56vw, 30vh)',
         backgroundColor: '#000',
         overflow: 'hidden',
       }}
