@@ -1,48 +1,25 @@
-// Each flame: x = center, w = half-base width, tipY = where the tip sits, lean = horizontal drift at tip
-const FLAMES = [
-  { x: 55,   w: 38, tipY: 28,  lean: 6  },
-  { x: 130,  w: 22, tipY: 110, lean: -3 },
-  { x: 200,  w: 42, tipY: 12,  lean: 9  },
-  { x: 285,  w: 26, tipY: 82,  lean: -6 },
-  { x: 365,  w: 40, tipY: 38,  lean: 7  },
-  { x: 450,  w: 24, tipY: 118, lean: -2 },
-  { x: 525,  w: 44, tipY: 18,  lean: 11 },
-  { x: 625,  w: 30, tipY: 88,  lean: -5 },
-  { x: 715,  w: 40, tipY: 42,  lean: 8  },
-  { x: 800,  w: 22, tipY: 120, lean: -3 },
-  { x: 875,  w: 42, tipY: 22,  lean: 10 },
-  { x: 970,  w: 28, tipY: 86,  lean: -6 },
-  { x: 1055, w: 40, tipY: 32,  lean: 7  },
-  { x: 1145, w: 24, tipY: 108, lean: -2 },
-  { x: 1220, w: 42, tipY: 14,  lean: 9  },
-  { x: 1315, w: 30, tipY: 95,  lean: -5 },
-  { x: 1405, w: 38, tipY: 44,  lean: 7  },
-]
+// Razor cuts — multiple parallel diagonal slashes at the same angle,
+// like the section was sliced by repeated blade strokes.
+//
+// All cuts share the same slope so they read as one "swipe sequence"
+// rather than random angles. The main cut forms the actual color
+// transition; the secondary slashes echo it with thin black bars.
 
-// Build a single flame path: wide curved base narrowing to a sharp asymmetric tip
-function flamePath({ x, w, tipY, lean }, baseY) {
-  const tipX = x + lean
-  const h = baseY - tipY
-  const leftX = x - w
-  const rightX = x + w
+export function SectionDivider({ from = '#0a0a0f', flip = false, height = 130 }) {
+  const W = 1440
 
-  // Left side: bulges out near base, pinches in near tip
-  const cl1x = leftX + w * 0.45
-  const cl1y = baseY - h * 0.22
-  const cl2x = tipX - w * 0.22
-  const cl2y = tipY + h * 0.18
+  // Main cut: bold diagonal that separates the lighter section from the dark.
+  // Left edge sits low, right edge sits high — creates an upward sweep.
+  const mainLeftY = height * 0.85
+  const mainRightY = height * 0.20
 
-  // Right side: mirror
-  const cr1x = tipX + w * 0.22
-  const cr1y = tipY + h * 0.18
-  const cr2x = rightX - w * 0.45
-  const cr2y = baseY - h * 0.22
-
-  return `M ${leftX} ${baseY} C ${cl1x} ${cl1y} ${cl2x} ${cl2y} ${tipX} ${tipY} C ${cr1x} ${cr1y} ${cr2x} ${cr2y} ${rightX} ${baseY} Z`
-}
-
-export function SectionDivider({ from = '#0a0a0f', flip = false, height = 200 }) {
-  const baseY = height - 30 // where the solid black base meets the flames
+  // Echo slashes — same slope, sitting above the main cut as thin bars.
+  // Each echo has a top edge and bottom edge (thickness varies).
+  const echoes = [
+    { leftTop: height * 0.58, rightTop: -height * 0.07, thickness: 6, opacity: 0.55 },
+    { leftTop: height * 0.42, rightTop: -height * 0.23, thickness: 3, opacity: 0.35 },
+    { leftTop: height * 0.28, rightTop: -height * 0.37, thickness: 2, opacity: 0.22 },
+  ]
 
   return (
     <div
@@ -58,7 +35,7 @@ export function SectionDivider({ from = '#0a0a0f', flip = false, height = 200 })
       }}
     >
       <svg
-        viewBox={`0 0 1440 ${height}`}
+        viewBox={`0 0 ${W} ${height}`}
         preserveAspectRatio="none"
         style={{
           position: 'absolute',
@@ -69,13 +46,46 @@ export function SectionDivider({ from = '#0a0a0f', flip = false, height = 200 })
           transform: flip ? 'scaleY(-1)' : 'none',
         }}
       >
-        {/* Solid black base — anchors the flames */}
-        <rect x="0" y={baseY} width="1440" height={height - baseY} fill="#000" />
+        {/* Main black region — angled top edge becomes the cut line */}
+        <polygon
+          points={`0,${height} ${W},${height} ${W},${mainRightY} 0,${mainLeftY}`}
+          fill="#000"
+        />
 
-        {/* Flame silhouettes */}
-        {FLAMES.map((f, i) => (
-          <path key={i} d={flamePath(f, baseY)} fill="#000" />
+        {/* Echo slashes — thin black bars trailing above the main cut */}
+        {echoes.map((e, i) => (
+          <polygon
+            key={i}
+            points={`0,${e.leftTop} ${W},${e.rightTop} ${W},${e.rightTop + e.thickness} 0,${e.leftTop + e.thickness}`}
+            fill="#000"
+            opacity={e.opacity}
+          />
         ))}
+
+        {/* Cyan edge highlight — sits exactly on the main cut */}
+        <line
+          x1="0" y1={mainLeftY}
+          x2={W} y2={mainRightY}
+          stroke="var(--color-accent)"
+          strokeWidth="1.8"
+          opacity="0.55"
+        />
+
+        {/* Faint cyan ghost on the first echo slash */}
+        <line
+          x1="0" y1={echoes[0].leftTop}
+          x2={W} y2={echoes[0].rightTop}
+          stroke="var(--color-accent)"
+          strokeWidth="0.8"
+          opacity="0.25"
+        />
+
+        {/* Small angular blade-tip accent near the middle of the main cut */}
+        <polygon
+          points={`${W * 0.48},${mainLeftY + (mainRightY - mainLeftY) * 0.48 - 4} ${W * 0.55},${mainLeftY + (mainRightY - mainLeftY) * 0.55 - 6} ${W * 0.555},${mainLeftY + (mainRightY - mainLeftY) * 0.555 - 2} ${W * 0.485},${mainLeftY + (mainRightY - mainLeftY) * 0.485}`}
+          fill="var(--color-accent)"
+          opacity="0.75"
+        />
       </svg>
     </div>
   )
