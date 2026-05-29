@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Roster from './pages/Roster'
 import Matches from './pages/Matches'
@@ -9,7 +10,8 @@ import About from './pages/About'
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="flex flex-col min-h-screen overflow-x-hidden" style={{ backgroundColor: 'var(--color-bg)' }}>
+      <ScrollToTop />
+      <div className="flex flex-col min-h-screen" style={{ backgroundColor: 'var(--color-bg)' }}>
         <Navbar />
         <main className="flex-1">
           <Routes>

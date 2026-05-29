@@ -4,12 +4,10 @@ import { ArrowRight } from 'lucide-react'
 import { logoFlat } from '../assets'
 
 const socials = [
-  { label: 'Twitter / X', href: '#' },
-  { label: 'YouTube', href: '#' },
-  { label: 'Instagram', href: '#' },
-  { label: 'TikTok', href: '#' },
-  { label: 'Twitch', href: '#' },
-  { label: 'Discord', href: '#' },
+  { label: 'YouTube',   href: 'https://youtube.com/@frictionesport?si=H8IMM56icH3C1bck' },
+  { label: 'Instagram', href: 'https://www.instagram.com/_razor_esports' },
+  { label: 'TikTok',   href: 'https://www.tiktok.com/@razoresports' },
+  { label: 'Discord',  href: 'https://discord.com/invite/razoresports' },
 ]
 
 const navLinks = [
@@ -76,6 +74,8 @@ export function Footer() {
               <li key={label}>
                 <a
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-gray-500 hover:text-[var(--color-accent)] transition-colors"
                   style={{ fontFamily: 'var(--font-heading)' }}
                 >
@@ -145,11 +145,11 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div
-        className="flex items-center justify-between"
-        style={{ maxWidth: '80rem', margin: '0 auto', padding: '1rem 1.5rem' }}
-        style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
-      >
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div
+          className="flex items-center justify-between"
+          style={{ maxWidth: '80rem', margin: '0 auto', padding: '1rem 1.5rem' }}
+        >
         <span
           className="text-xs text-gray-700 uppercase tracking-widest"
           style={{ fontFamily: 'var(--font-heading)' }}
@@ -162,6 +162,7 @@ export function Footer() {
         >
           All rights reserved
         </span>
+        </div>
       </div>
     </footer>
   )

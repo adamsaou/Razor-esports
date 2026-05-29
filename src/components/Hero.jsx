@@ -103,19 +103,18 @@ export function Hero() {
         >
           <Link
             to="/roster"
-            className="px-10 py-3 text-xs uppercase tracking-[0.2em] font-bold transition-all hover:brightness-110"
+            className="btn-aurora px-10 py-3 text-xs uppercase tracking-[0.2em] font-bold transition-colors"
             style={{
               fontFamily: 'var(--font-heading)',
-              backgroundColor: 'var(--color-accent)',
-              color: 'var(--color-bg)',
+              color: 'var(--color-accent)',
             }}
           >
             Meet the Team
           </Link>
           <Link
             to="/matches"
-            className="px-10 py-3 text-xs uppercase tracking-[0.2em] font-bold border transition-all hover:border-white hover:text-white text-gray-500"
-            style={{ fontFamily: 'var(--font-heading)', borderColor: 'rgba(255,255,255,0.12)' }}
+            className="btn-aurora px-10 py-3 text-xs uppercase tracking-[0.2em] font-bold transition-colors text-gray-500 hover:text-white"
+            style={{ fontFamily: 'var(--font-heading)' }}
           >
             Matches
           </Link>
@@ -129,14 +128,19 @@ export function Hero() {
         transition={{ delay: 1.3, duration: 0.6 }}
         className="absolute bottom-10 flex flex-col items-center gap-2"
       >
-        <span className="text-xs uppercase tracking-widest text-gray-700" style={{ fontFamily: 'var(--font-heading)' }}>
+        <motion.span
+          animate={{ opacity: [0.25, 0.5, 0.25] }}
+          transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+          className="text-xs uppercase tracking-widest"
+          style={{ fontFamily: 'var(--font-heading)', color: 'rgba(255,255,255,0.3)' }}
+        >
           Scroll
-        </span>
+        </motion.span>
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.4, ease: 'easeInOut' }}
-          className="w-px h-8"
-          style={{ backgroundColor: 'var(--color-accent)', opacity: 0.2 }}
+          animate={{ opacity: [0.08, 0.25, 0.08], scaleY: [0.8, 1, 0.8] }}
+          transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+          className="w-px h-7 origin-top"
+          style={{ backgroundColor: 'var(--color-accent)' }}
         />
       </motion.div>
     </section>

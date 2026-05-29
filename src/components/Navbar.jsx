@@ -29,10 +29,14 @@ export function Navbar() {
         borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
       }}
     >
-      <div className="max-w-7xl mx-auto h-28 grid items-center" style={{ gridTemplateColumns: '1fr auto 1fr', padding: '0 2.5rem' }}>
+      <div className="max-w-7xl mx-auto h-28 flex md:grid items-center justify-between" style={{ gridTemplateColumns: '1fr auto 1fr', padding: '0 2.5rem' }}>
 
         {/* Left — logo */}
-        <Link to="/" className="flex items-center gap-4 shrink-0 group">
+        <Link
+          to="/"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="flex items-center gap-4 shrink-0 group"
+        >
           <img
             src={logoFlat}
             alt="RaZor"
@@ -73,6 +77,7 @@ export function Navbar() {
               <NavLink
                 to={to}
                 end={to === '/'}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className={({ isActive }) =>
                   `text-base tracking-wide transition-colors duration-200 ${
                     isActive
@@ -93,17 +98,17 @@ export function Navbar() {
           <button className="text-gray-500 hover:text-white transition-colors">
             <Search size={18} />
           </button>
-          <a
-            href="/roster"
-            className="px-5 py-2 text-xs font-bold uppercase tracking-widest transition-all hover:brightness-110"
+          <Link
+            to="/roster"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="btn-aurora px-5 py-2 text-xs font-bold uppercase tracking-widest transition-colors"
             style={{
               fontFamily: 'var(--font-heading)',
-              backgroundColor: 'var(--color-accent)',
-              color: 'var(--color-bg)',
+              color: 'var(--color-accent)',
             }}
           >
             Join Us
-          </a>
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -123,7 +128,7 @@ export function Navbar() {
               key={to}
               to={to}
               end={to === '/'}
-              onClick={() => setOpen(false)}
+              onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
               className={({ isActive }) =>
                 `text-sm tracking-widest uppercase ${
                   isActive ? 'text-[var(--color-accent)]' : 'text-gray-400'
