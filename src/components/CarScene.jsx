@@ -17,7 +17,15 @@ function useIsMobile() {
 const VIDEO_DESKTOP_CLASS =
   'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
 const VIDEO_MOBILE_CLASS =
-  'absolute inset-0 w-full h-full object-contain pointer-events-none select-none'
+  'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
+
+// Mobile: zoom into the center of the frame so the action fills the section
+// instead of sitting tiny in the middle.
+const VIDEO_MOBILE_STYLE = {
+  mixBlendMode: 'screen',
+  willChange: 'transform',
+  transform: 'translateZ(0) scale(1.35)',
+}
 const VIDEO_BASE_STYLE = {
   mixBlendMode: 'screen',
   willChange: 'transform',
@@ -25,7 +33,7 @@ const VIDEO_BASE_STYLE = {
 }
 
 // ───────── Mobile: play once on entry, reset on exit, replay on re-entry ─────────
-const MOBILE_PLAYBACK_RATE = 1.8
+const MOBILE_PLAYBACK_RATE = 2.5
 
 function MobileCarScene() {
   const sectionRef = useRef(null)
@@ -74,21 +82,21 @@ function MobileCarScene() {
         src={ballAnimation}
         muted playsInline preload="auto" disableRemotePlayback
         className={VIDEO_MOBILE_CLASS}
-        style={VIDEO_BASE_STYLE}
+        style={VIDEO_MOBILE_STYLE}
       />
       <video
         ref={carRef}
         src={carAnimation}
         muted playsInline preload="auto" disableRemotePlayback
         className={VIDEO_MOBILE_CLASS}
-        style={VIDEO_BASE_STYLE}
+        style={VIDEO_MOBILE_STYLE}
       />
       <video
         ref={otherCarRef}
         src={otherCarAnimation}
         muted playsInline preload="auto" disableRemotePlayback
         className={VIDEO_MOBILE_CLASS}
-        style={VIDEO_BASE_STYLE}
+        style={VIDEO_MOBILE_STYLE}
       />
       {/* Centered radial spotlight — frames the ball, masks edge ghosting */}
       <div
