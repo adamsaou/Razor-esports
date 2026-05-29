@@ -10,6 +10,8 @@ export { default as logoDark } from './images/logos/logo-dark.png'  // 3D on dar
 export { default as bannerHero } from './images/banners/banner-hero.png'
 
 // Videos
-export { default as carAnimation } from './videos/car-animation.mp4'
+export { default as carAnimation }      from './videos/car-animation.mp4'
+export { default as otherCarAnimation } from './videos/other-car-animation.mp4'
+export { default as ballAnimation }     from './videos/ball-animation.mp4'
 
 // Players — add below as: export { default as playerSlug } from './images/players/slug.png'
