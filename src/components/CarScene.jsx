@@ -25,6 +25,8 @@ const VIDEO_BASE_STYLE = {
 }
 
 // ───────── Mobile: play once on entry, reset on exit, replay on re-entry ─────────
+const MOBILE_PLAYBACK_RATE = 1.8
+
 function MobileCarScene() {
   const sectionRef = useRef(null)
   const ballRef = useRef(null)
@@ -42,6 +44,7 @@ function MobileCarScene() {
         for (const v of videos) {
           if (inView) {
             v.currentTime = 0
+            v.playbackRate = MOBILE_PLAYBACK_RATE
             v.play().catch(() => {})
           } else {
             v.pause()
@@ -60,7 +63,8 @@ function MobileCarScene() {
       ref={sectionRef}
       style={{
         position: 'relative',
-        height: '70vh',
+        width: '100%',
+        aspectRatio: '16 / 9',
         backgroundColor: '#000',
         overflow: 'hidden',
       }}
@@ -86,11 +90,12 @@ function MobileCarScene() {
         className={VIDEO_MOBILE_CLASS}
         style={VIDEO_BASE_STYLE}
       />
+      {/* Centered radial spotlight — frames the ball, masks edge ghosting */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%)',
+            'radial-gradient(circle at center, transparent 35%, rgba(0,0,0,0.55) 75%)',
         }}
       />
     </section>
