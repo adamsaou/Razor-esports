@@ -1,15 +1,74 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
 import { carAnimation, otherCarAnimation, ballAnimation } from '../assets'
 
-export function CarScene() {
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    const onChange = () => setIsMobile(mq.matches)
+    onChange()
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  return isMobile
+}
+
+const VIDEO_BASE_CLASS =
+  'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
+const VIDEO_BASE_STYLE = {
+  mixBlendMode: 'screen',
+  willChange: 'transform',
+  transform: 'translateZ(0)',
+}
+
+// ─────────────────────────── Mobile: autoplay loop, no scrub ───────────────────────────
+function MobileCarScene() {
+  return (
+    <section
+      style={{
+        position: 'relative',
+        height: '70vh',
+        backgroundColor: '#000',
+        overflow: 'hidden',
+      }}
+    >
+      <video
+        src={ballAnimation}
+        autoPlay muted loop playsInline disableRemotePlayback
+        className={VIDEO_BASE_CLASS}
+        style={VIDEO_BASE_STYLE}
+      />
+      <video
+        src={carAnimation}
+        autoPlay muted loop playsInline disableRemotePlayback
+        className={VIDEO_BASE_CLASS}
+        style={VIDEO_BASE_STYLE}
+      />
+      <video
+        src={otherCarAnimation}
+        autoPlay muted loop playsInline disableRemotePlayback
+        className={VIDEO_BASE_CLASS}
+        style={VIDEO_BASE_STYLE}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%)',
+        }}
+      />
+    </section>
+  )
+}
+
+// ─────────────────────────── Desktop: scroll-scrubbed ───────────────────────────
+function DesktopCarScene() {
   const ref = useRef(null)
   const carRef = useRef(null)
   const otherCarRef = useRef(null)
   const ballRef = useRef(null)
 
-  // The target progress we WANT the videos to be at (set by scroll).
-  // A rAF loop nudges currentTime toward this — never more than once per frame.
   const targetProgress = useRef(0)
   const rafId = useRef(0)
   const visible = useRef(false)
@@ -27,7 +86,6 @@ export function CarScene() {
     targetProgress.current = Math.min(Math.max((latest - VIDEO_START) / range, 0), 0.999)
   })
 
-  // Pause the section's work when it's offscreen — saves a lot on long pages
   useEffect(() => {
     if (!ref.current) return
     const io = new IntersectionObserver(
@@ -38,14 +96,12 @@ export function CarScene() {
     return () => io.disconnect()
   }, [])
 
-  // Single rAF loop drives all 3 videos — at most one seek per video per frame
   useEffect(() => {
     const tick = () => {
       if (visible.current) {
         for (const v of [carRef.current, otherCarRef.current, ballRef.current]) {
           if (!v || !v.duration || Number.isNaN(v.duration)) continue
           const t = targetProgress.current * v.duration
-          // Only seek if the gap is meaningful — avoids redundant decoder work
           if (Math.abs(v.currentTime - t) > 0.04) v.currentTime = t
         }
       }
@@ -65,14 +121,6 @@ export function CarScene() {
     }
   }
 
-  const videoClasses =
-    'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
-  const videoStyle = {
-    mixBlendMode: 'screen',
-    willChange: 'transform',
-    transform: 'translateZ(0)', // promote to its own GPU layer
-  }
-
   return (
     <section ref={ref} style={{ height: '500vh' }}>
       <div
@@ -82,37 +130,26 @@ export function CarScene() {
         <video
           ref={ballRef}
           src={ballAnimation}
-          muted
-          playsInline
-          preload="auto"
-          disableRemotePlayback
+          muted playsInline preload="auto" disableRemotePlayback
           onLoadedMetadata={initVideo(ballRef)}
-          className={videoClasses}
-          style={videoStyle}
+          className={VIDEO_BASE_CLASS}
+          style={VIDEO_BASE_STYLE}
         />
-
         <video
           ref={carRef}
           src={carAnimation}
-          muted
-          playsInline
-          preload="auto"
-          disableRemotePlayback
+          muted playsInline preload="auto" disableRemotePlayback
           onLoadedMetadata={initVideo(carRef)}
-          className={videoClasses}
-          style={videoStyle}
+          className={VIDEO_BASE_CLASS}
+          style={VIDEO_BASE_STYLE}
         />
-
         <video
           ref={otherCarRef}
           src={otherCarAnimation}
-          muted
-          playsInline
-          preload="auto"
-          disableRemotePlayback
+          muted playsInline preload="auto" disableRemotePlayback
           onLoadedMetadata={initVideo(otherCarRef)}
-          className={videoClasses}
-          style={videoStyle}
+          className={VIDEO_BASE_CLASS}
+          style={VIDEO_BASE_STYLE}
         />
 
         <motion.div
@@ -130,6 +167,11 @@ export function CarScene() {
       </div>
     </section>
   )
+}
+
+export function CarScene() {
+  const isMobile = useIsMobile()
+  return isMobile ? <MobileCarScene /> : <DesktopCarScene />
 }
 
 export default CarScene
