@@ -21,13 +21,17 @@ const VIDEO_STYLE = {
   transform: 'translateZ(0)',
 }
 
-// ───────── Mobile: play once on entry, reset on exit, replay on re-entry ─────────
+// ───────── Mobile: title → video → tagline, choreographed by phase ─────────
 const MOBILE_PLAYBACK_RATE = 2.5
+const TITLE_HOLD_MS = 1800 // how long the title stays on black before video starts
 
 function MobileCarScene() {
   const sectionRef = useRef(null)
   const videoRef = useRef(null)
+  const titleTimerRef = useRef(null)
+  const [phase, setPhase] = useState('idle') // 'idle' | 'title' | 'video' | 'tagline'
 
+  // Drive phase transitions from viewport visibility
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
@@ -35,22 +39,50 @@ function MobileCarScene() {
     const io = new IntersectionObserver(
       entries => {
         const inView = entries[0].isIntersecting
-        const v = videoRef.current
-        if (!v) return
         if (inView) {
-          v.currentTime = 0
-          v.playbackRate = MOBILE_PLAYBACK_RATE
-          v.play().catch(() => {})
+          setPhase('title')
+          clearTimeout(titleTimerRef.current)
+          titleTimerRef.current = setTimeout(() => {
+            setPhase('video')
+            const v = videoRef.current
+            if (v) {
+              v.currentTime = 0
+              v.playbackRate = MOBILE_PLAYBACK_RATE
+              v.play().catch(() => {})
+            }
+          }, TITLE_HOLD_MS)
         } else {
-          v.pause()
-          v.currentTime = 0
+          clearTimeout(titleTimerRef.current)
+          setPhase('idle')
+          const v = videoRef.current
+          if (v) {
+            v.pause()
+            v.currentTime = 0
+          }
         }
       },
       { threshold: 0.4 }
     )
     io.observe(section)
-    return () => io.disconnect()
+    return () => {
+      io.disconnect()
+      clearTimeout(titleTimerRef.current)
+    }
   }, [])
+
+  // When the video finishes playing, advance to the tagline phase
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    const onEnded = () => setPhase(p => (p === 'video' ? 'tagline' : p))
+    v.addEventListener('ended', onEnded)
+    return () => v.removeEventListener('ended', onEnded)
+  }, [])
+
+  const showTitle = phase === 'title'
+  const showTagline = phase === 'tagline'
+  // Black overlay covers the video while title is up; lifts during video; comes back softly for tagline
+  const blackoutOpacity = showTitle ? 1 : showTagline ? 0.55 : 0
 
   return (
     <section
@@ -68,8 +100,24 @@ function MobileCarScene() {
         src={kickoffVideo}
         muted playsInline preload="auto" disableRemotePlayback
         className={VIDEO_CLASS}
-        style={VIDEO_STYLE}
+        style={{
+          ...VIDEO_STYLE,
+          filter: showTagline ? 'blur(8px) contrast(1.18) brightness(0.95)' : 'contrast(1.18) brightness(0.95)',
+          transition: 'filter 0.7s ease-out',
+        }}
       />
+
+      {/* Black overlay — drives the title-then-video reveal and the tagline darkening */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundColor: '#000',
+          opacity: blackoutOpacity,
+          transition: 'opacity 0.7s ease-out',
+        }}
+      />
+
+      {/* Vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -77,6 +125,50 @@ function MobileCarScene() {
             'radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.55) 90%)',
         }}
       />
+
+      {/* Title — JOIN RAZOR */}
+      <motion.div
+        className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-30 px-4"
+        initial="hidden"
+        animate={showTitle ? 'visible' : 'exit'}
+        variants={titleContainer}
+      >
+        <motion.div
+          variants={titleWord}
+          className="text-[9px] uppercase tracking-[0.5em] text-gray-500 mb-2"
+          style={{ fontFamily: 'var(--font-heading)' }}
+        >
+          The Call
+        </motion.div>
+        <h2
+          className="font-bold uppercase leading-none flex items-baseline justify-center gap-x-3"
+          style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: 'clamp(1.5rem, 8vw, 2.75rem)', color: '#fff' }}
+        >
+          <motion.span variants={titleWord} className="inline-block">Join</motion.span>
+          <motion.span variants={titleWord} className="inline-block">
+            Ra<span style={{ color: 'var(--color-accent)' }}>Z</span>or
+          </motion.span>
+        </h2>
+      </motion.div>
+
+      {/* Tagline — Represent the blade */}
+      <motion.div
+        className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-30 px-4"
+        initial="hidden"
+        animate={showTagline ? 'visible' : 'hidden'}
+        variants={taglineContainer}
+      >
+        <div
+          className="font-bold uppercase flex flex-wrap items-baseline justify-center gap-x-2"
+          style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.14em', fontSize: 'clamp(1rem, 5.5vw, 1.75rem)', color: '#fff' }}
+        >
+          <motion.span variants={taglineWord} className="inline-block">Represent</motion.span>
+          <motion.span variants={taglineWord} className="inline-block">the</motion.span>
+          <motion.span variants={taglineWord} className="inline-block" style={{ color: 'var(--color-accent)' }}>
+            blade
+          </motion.span>
+        </div>
+      </motion.div>
     </section>
   )
 }
