@@ -161,14 +161,14 @@ function MobileCarScene() {
           className="font-bold uppercase leading-none flex items-baseline justify-center gap-x-3"
           style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: 'clamp(1.5rem, 8vw, 2.75rem)', color: '#fff' }}
         >
-          <motion.span variants={titleWord} className="inline-block">Join</motion.span>
+          <motion.span variants={titleWord} className="inline-block">About</motion.span>
           <motion.span variants={titleWord} className="inline-block">
             Ra<span style={{ color: 'var(--color-accent)' }}>Z</span>or
           </motion.span>
         </h2>
       </motion.div>
 
-      {/* Tagline — Represent the blade */}
+      {/* Tagline — How to Join RaZor */}
       <motion.div
         className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-30 px-4"
         initial="hidden"
@@ -179,10 +179,11 @@ function MobileCarScene() {
           className="font-bold uppercase flex flex-wrap items-baseline justify-center gap-x-2"
           style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.14em', fontSize: 'clamp(1rem, 5.5vw, 1.75rem)', color: '#fff' }}
         >
-          <motion.span variants={taglineWord} className="inline-block">Represent</motion.span>
-          <motion.span variants={taglineWord} className="inline-block">the</motion.span>
-          <motion.span variants={taglineWord} className="inline-block" style={{ color: 'var(--color-accent)' }}>
-            blade
+          <motion.span variants={taglineWord} className="inline-block">How</motion.span>
+          <motion.span variants={taglineWord} className="inline-block">to</motion.span>
+          <motion.span variants={taglineWord} className="inline-block">Join</motion.span>
+          <motion.span variants={taglineWord} className="inline-block">
+            Ra<span style={{ color: 'var(--color-accent)' }}>Z</span>or
           </motion.span>
         </div>
       </motion.div>
@@ -332,7 +333,7 @@ function DesktopCarScene() {
             className="font-bold uppercase leading-none flex flex-wrap items-baseline justify-center gap-x-6"
             style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.14em', fontSize: 'clamp(3.5rem, 9vw, 8rem)', color: '#fff' }}
           >
-            <motion.span variants={titleWord} className="inline-block">Join</motion.span>
+            <motion.span variants={titleWord} className="inline-block">About</motion.span>
             <motion.span variants={titleWord} className="inline-block">
               Ra<span style={{ color: 'var(--color-accent)' }}>Z</span>or
             </motion.span>
@@ -347,7 +348,7 @@ function DesktopCarScene() {
           </motion.div>
         </motion.div>
 
-        {/* ─── Exit tagline: Represent the blade ─── */}
+        {/* ─── Exit tagline: How to Join RaZor ─── */}
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-30 px-6"
           initial="hidden"
@@ -366,10 +367,11 @@ function DesktopCarScene() {
             className="font-bold uppercase flex flex-wrap items-baseline justify-center gap-x-5"
             style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.16em', fontSize: 'clamp(2rem, 5.5vw, 4.5rem)', color: '#fff' }}
           >
-            <motion.span variants={taglineWord} className="inline-block">Represent</motion.span>
-            <motion.span variants={taglineWord} className="inline-block">the</motion.span>
-            <motion.span variants={taglineWord} className="inline-block" style={{ color: 'var(--color-accent)' }}>
-              blade
+            <motion.span variants={taglineWord} className="inline-block">How</motion.span>
+            <motion.span variants={taglineWord} className="inline-block">to</motion.span>
+            <motion.span variants={taglineWord} className="inline-block">Join</motion.span>
+            <motion.span variants={taglineWord} className="inline-block">
+              Ra<span style={{ color: 'var(--color-accent)' }}>Z</span>or
             </motion.span>
           </div>
           <motion.div
@@ -377,7 +379,7 @@ function DesktopCarScene() {
             className="mt-5 text-[10px] uppercase tracking-[0.5em] text-gray-500"
             style={{ fontFamily: 'var(--font-heading)' }}
           >
-            Join the Squad
+            Open Tryouts
           </motion.div>
         </motion.div>
       </div>
