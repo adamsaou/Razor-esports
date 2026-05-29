@@ -81,8 +81,11 @@ function MobileCarScene() {
 
   const showTitle = phase === 'title'
   const showTagline = phase === 'tagline'
-  // Black overlay covers the video while title is up; lifts during video; comes back softly for tagline
-  const blackoutOpacity = showTitle ? 1 : showTagline ? 0.55 : 0
+  // Black overlay also covers the video in 'idle' so it never flashes before the title appears
+  const blackoutOpacity =
+    phase === 'idle' || phase === 'title' ? 1 :
+    phase === 'tagline' ? 0.55 :
+    0
 
   return (
     <section
