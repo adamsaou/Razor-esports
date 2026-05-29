@@ -1,7 +1,7 @@
 import { NavLink, Link } from 'react-router-dom'
 import { Menu, X, Search } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { logoNav } from '../assets'
+import { logoFlat } from '../assets'
 
 const links = [
   { to: '/', label: 'Home' },
@@ -29,28 +29,37 @@ export function Navbar() {
         borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 grid items-center" style={{ gridTemplateColumns: '1fr auto 1fr' }}>
+      <div className="max-w-7xl mx-auto h-28 grid items-center" style={{ gridTemplateColumns: '1fr auto 1fr', padding: '0 2.5rem' }}>
 
         {/* Left — logo */}
-        <Link to="/" className="flex items-center gap-3 shrink-0 group">
+        <Link to="/" className="flex items-center gap-4 shrink-0 group">
           <img
-            src={logoNav}
+            src={logoFlat}
             alt="RaZor"
-            className="h-11 w-auto transition-transform duration-300 group-hover:scale-105"
-            style={{ filter: 'invert(1) sepia(1) saturate(2) hue-rotate(155deg)', opacity: 0.9 }}
+            className="w-auto transition-transform duration-300 group-hover:scale-105"
+            style={{
+              height: '2.5rem',
+              filter: 'invert(1) sepia(1) saturate(2) hue-rotate(155deg)',
+              opacity: 0.9,
+            }}
           />
-          {/* vertical separator */}
-          <div className="h-7 w-px mx-1" style={{ backgroundColor: 'rgba(0,245,255,0.2)' }} />
-          <div className="flex flex-col leading-none">
+          <div className="w-px" style={{ height: '2.75rem', backgroundColor: 'rgba(0,245,255,0.2)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <span
-              className="text-xl font-bold uppercase tracking-[0.18em]"
-              style={{ fontFamily: 'var(--font-display)', color: '#fff' }}
+              className="text-3xl font-bold uppercase leading-none"
+              style={{ fontFamily: 'var(--font-display)', color: '#fff', letterSpacing: '0.18em' }}
             >
               Ra<span style={{ color: 'var(--color-accent)' }}>Z</span>or
             </span>
             <span
-              className="text-[9px] uppercase tracking-[0.35em] mt-0.5"
-              style={{ fontFamily: 'var(--font-heading)', color: 'rgba(0,245,255,0.45)' }}
+              style={{
+                fontFamily: 'var(--font-heading)',
+                color: 'rgba(0,245,255,0.45)',
+                fontSize: '10px',
+                letterSpacing: '0.35em',
+                textTransform: 'uppercase',
+                lineHeight: 1,
+              }}
             >
               Esports
             </span>
@@ -58,14 +67,14 @@ export function Navbar() {
         </Link>
 
         {/* Center — nav links */}
-        <ul className="hidden md:flex items-center gap-8">
+        <ul className="hidden md:flex items-center gap-10">
           {links.map(({ to, label }) => (
             <li key={to}>
               <NavLink
                 to={to}
                 end={to === '/'}
                 className={({ isActive }) =>
-                  `text-sm tracking-wide transition-colors duration-200 ${
+                  `text-base tracking-wide transition-colors duration-200 ${
                     isActive
                       ? 'text-[var(--color-accent)]'
                       : 'text-gray-400 hover:text-white'
@@ -82,11 +91,11 @@ export function Navbar() {
         {/* Right — icons */}
         <div className="hidden md:flex items-center gap-4 justify-end">
           <button className="text-gray-500 hover:text-white transition-colors">
-            <Search size={16} />
+            <Search size={18} />
           </button>
           <a
             href="/roster"
-            className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition-all hover:brightness-110"
+            className="px-5 py-2 text-xs font-bold uppercase tracking-widest transition-all hover:brightness-110"
             style={{
               fontFamily: 'var(--font-heading)',
               backgroundColor: 'var(--color-accent)',

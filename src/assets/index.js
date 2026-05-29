@@ -1,8 +1,12 @@
-export { default as logoNav } from './images/RaZor_2.png'
-export { default as logoHero } from './images/razor_psd_.png'
-export { default as logoGlow } from './images/RaZor.png'
-export { default as logo3d } from './images/RaZor_3.png'
-export { default as banner } from './images/razor_banner_2.png'
+// Logos — flat silhouette on white, CSS-filtered to cyan in navbar/footer
+export { default as logoFlat } from './images/logos/logo-flat.png'
 
-// Uncomment as you add player images:
-// export { default as player1 } from './images/players/player1.jpg'
+// Logos — various rendered/3D variants
+export { default as logoGlow } from './images/logos/logo-glow.png'  // 3D with blue cinematic background
+export { default as logo3d }   from './images/logos/logo-3d.png'    // 3D isometric on white
+export { default as logoDark } from './images/logos/logo-dark.png'  // 3D on dark background
+
+// Banners
+export { default as bannerHero } from './images/banners/banner-hero.png'
+
+// Players — add below as: export { default as playerSlug } from './images/players/slug.png'

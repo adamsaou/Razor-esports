@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { logoNav } from '../assets'
+import { logoFlat } from '../assets'
 
 export function Hero() {
   return (
@@ -35,7 +35,7 @@ export function Hero() {
 
         {/* Logo mark */}
         <motion.img
-          src={logoNav}
+          src={logoFlat}
           alt="RaZor"
           className="w-16 md:w-20 mb-2"
           style={{ filter: 'invert(1) sepia(1) saturate(2) hue-rotate(155deg)', opacity: 0.8 }}

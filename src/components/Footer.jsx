@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import { logoNav } from '../assets'
+import { logoFlat } from '../assets'
 
 const socials = [
   { label: 'Twitter / X', href: '#' },
@@ -34,7 +34,7 @@ export function Footer() {
         <div className="flex flex-col gap-4" style={{ minWidth: 0, overflow: 'hidden' }}>
           <Link to="/" className="flex items-center gap-3">
             <img
-              src={logoNav}
+              src={logoFlat}
               alt="RaZor"
               className="h-10 w-auto shrink-0"
               style={{ filter: 'invert(1) sepia(1) saturate(2) hue-rotate(155deg)', opacity: 0.9 }}
