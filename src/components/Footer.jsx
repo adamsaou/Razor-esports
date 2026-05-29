@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import { logoFlat } from '../assets'
 
 const socials = [
-  { label: 'YouTube',   href: 'https://youtube.com/@frictionesport?si=H8IMM56icH3C1bck' },
+  { label: 'YouTube',   href: 'https://www.youtube.com/@RaZorEsportsofficial' },
   { label: 'Instagram', href: 'https://www.instagram.com/_razor_esports' },
   { label: 'TikTok',   href: 'https://www.tiktok.com/@razoresports' },
   { label: 'Discord',  href: 'https://discord.com/invite/razoresports' },
