@@ -19,12 +19,13 @@ const VIDEO_DESKTOP_CLASS =
 const VIDEO_MOBILE_CLASS =
   'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
 
-// Mobile: zoom into the center of the frame so the action fills the section
-// instead of sitting tiny in the middle.
+// Mobile: zoom in, plus filter contrast to crush video-compression near-blacks
+// to true black so the screen blend mode hides all background pixels cleanly.
 const VIDEO_MOBILE_STYLE = {
   mixBlendMode: 'screen',
   willChange: 'transform',
-  transform: 'translateZ(0) scale(1.35)',
+  transform: 'translateZ(0) scale(1.25)',
+  filter: 'contrast(1.18) brightness(0.95)',
 }
 const VIDEO_BASE_STYLE = {
   mixBlendMode: 'screen',
@@ -98,12 +99,12 @@ function MobileCarScene() {
         className={VIDEO_MOBILE_CLASS}
         style={VIDEO_MOBILE_STYLE}
       />
-      {/* Centered radial spotlight — frames the ball, masks edge ghosting */}
+      {/* Tight radial spotlight — frames the ball, masks any residual edge halo */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at center, transparent 35%, rgba(0,0,0,0.55) 75%)',
+            'radial-gradient(circle at center, transparent 25%, rgba(0,0,0,0.85) 70%, #000 100%)',
         }}
       />
     </section>
