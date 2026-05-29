@@ -14,18 +14,50 @@ function useIsMobile() {
   return isMobile
 }
 
-const VIDEO_BASE_CLASS =
+const VIDEO_DESKTOP_CLASS =
   'absolute inset-0 w-full h-full object-cover pointer-events-none select-none'
+const VIDEO_MOBILE_CLASS =
+  'absolute inset-0 w-full h-full object-contain pointer-events-none select-none'
 const VIDEO_BASE_STYLE = {
   mixBlendMode: 'screen',
   willChange: 'transform',
   transform: 'translateZ(0)',
 }
 
-// ─────────────────────────── Mobile: autoplay loop, no scrub ───────────────────────────
+// ───────── Mobile: play once on entry, reset on exit, replay on re-entry ─────────
 function MobileCarScene() {
+  const sectionRef = useRef(null)
+  const ballRef = useRef(null)
+  const carRef = useRef(null)
+  const otherCarRef = useRef(null)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const io = new IntersectionObserver(
+      entries => {
+        const inView = entries[0].isIntersecting
+        const videos = [ballRef.current, carRef.current, otherCarRef.current].filter(Boolean)
+        for (const v of videos) {
+          if (inView) {
+            v.currentTime = 0
+            v.play().catch(() => {})
+          } else {
+            v.pause()
+            v.currentTime = 0
+          }
+        }
+      },
+      { threshold: 0.4 }
+    )
+    io.observe(section)
+    return () => io.disconnect()
+  }, [])
+
   return (
     <section
+      ref={sectionRef}
       style={{
         position: 'relative',
         height: '70vh',
@@ -34,21 +66,24 @@ function MobileCarScene() {
       }}
     >
       <video
+        ref={ballRef}
         src={ballAnimation}
-        autoPlay muted loop playsInline disableRemotePlayback
-        className={VIDEO_BASE_CLASS}
+        muted playsInline preload="auto" disableRemotePlayback
+        className={VIDEO_MOBILE_CLASS}
         style={VIDEO_BASE_STYLE}
       />
       <video
+        ref={carRef}
         src={carAnimation}
-        autoPlay muted loop playsInline disableRemotePlayback
-        className={VIDEO_BASE_CLASS}
+        muted playsInline preload="auto" disableRemotePlayback
+        className={VIDEO_MOBILE_CLASS}
         style={VIDEO_BASE_STYLE}
       />
       <video
+        ref={otherCarRef}
         src={otherCarAnimation}
-        autoPlay muted loop playsInline disableRemotePlayback
-        className={VIDEO_BASE_CLASS}
+        muted playsInline preload="auto" disableRemotePlayback
+        className={VIDEO_MOBILE_CLASS}
         style={VIDEO_BASE_STYLE}
       />
       <div
@@ -132,7 +167,7 @@ function DesktopCarScene() {
           src={ballAnimation}
           muted playsInline preload="auto" disableRemotePlayback
           onLoadedMetadata={initVideo(ballRef)}
-          className={VIDEO_BASE_CLASS}
+          className={VIDEO_DESKTOP_CLASS}
           style={VIDEO_BASE_STYLE}
         />
         <video
@@ -140,7 +175,7 @@ function DesktopCarScene() {
           src={carAnimation}
           muted playsInline preload="auto" disableRemotePlayback
           onLoadedMetadata={initVideo(carRef)}
-          className={VIDEO_BASE_CLASS}
+          className={VIDEO_DESKTOP_CLASS}
           style={VIDEO_BASE_STYLE}
         />
         <video
@@ -148,7 +183,7 @@ function DesktopCarScene() {
           src={otherCarAnimation}
           muted playsInline preload="auto" disableRemotePlayback
           onLoadedMetadata={initVideo(otherCarRef)}
-          className={VIDEO_BASE_CLASS}
+          className={VIDEO_DESKTOP_CLASS}
           style={VIDEO_BASE_STYLE}
         />
 
